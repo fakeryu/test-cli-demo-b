@@ -1,7 +1,9 @@
 {
-  "name": "vue-manage-system",
+  "name": "{{ name }}",
   "version": "5.1.0",
+  "description": "{{ description }}",
   "private": true,
+  "author": "{{ author }}",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
