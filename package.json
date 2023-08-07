@@ -1,18 +1,38 @@
 {
-  "name": "{{ name }}",
-  "version": "1.0.0",
-  "description": "{{ description }}",
+  "name": "vue-manage-system",
+  "version": "5.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "{{ author }}",
-  "license": "ISC",
-  "bin": {
-    "democast": "index.js"
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "serve": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
-    "commander": "^11.0.0",
-    "download-git-repo": "^3.0.2"
-  }
+    "amfe-flexible": "^2.2.1",
+    "axios": "^0.21.1",
+    "element-plus": "1.0.2-beta.52",
+    "vue": "^3.1.2",
+    "vue-cropperjs": "^5.0.0",
+    "vue-i18n": "^9.0.0",
+    "vue-router": "^4.0.10",
+    "vue-schart": "^2.0.0",
+    "vuex": "^4.0.2",
+    "wangeditor": "^4.7.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.2.3",
+    "@vue/compiler-sfc": "^3.1.2",
+    "crypto-js": "^4.1.1",
+    "postcss-pxtorem": "^6.0.0",
+    "px2rem-loader": "^0.1.9",
+    "sass": "^1.53.0",
+    "unplugin-auto-import": "^0.9.2",
+    "unplugin-vue-components": "^0.20.1",
+    "vite": "2.3.7"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
