@@ -74,6 +74,18 @@ service.interceptors.response.use(
     }
   },
   (error) => {
+    if (
+      error.code === "ECONNABORTED" ||
+      error.message === "Network Error" ||
+      error.message.includes("timeout")
+    ) {
+      context.config.globalProperties.$message({
+        message: `网络超时`,
+        grouping: true,
+        type: "error",
+      });
+      return Promise.reject(error);
+    }
     switch (error.status) {
       case 404:
         context.config.globalProperties.push("/404");
