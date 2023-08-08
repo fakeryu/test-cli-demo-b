@@ -79,11 +79,11 @@ service.interceptors.response.use(
       error.message === "Network Error" ||
       error.message.includes("timeout")
     ) {
-      context.config.globalProperties.$message({
-        message: `网络超时`,
-        grouping: true,
-        type: "error",
-      });
+      // context.config.globalProperties.$message({
+      //   message: `网络超时`,
+      //   grouping: true,
+      //   type: "error",
+      // });
       return Promise.reject(error);
     }
     switch (error.status) {
