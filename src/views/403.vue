@@ -2,13 +2,13 @@
  * @Author: berg yu
  * @Date: 2022-04-15 18:53:56
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-07 14:17:03
+ * @LastEditTime: 2023-08-10 10:00:49
  * @Description: 请填写简介
 -->
 <template>
   <div class="error-page">
     <div class="error-code">4<span>0</span>3</div>
-    <div class="error-desc">你没有权限访问该页面哦</div>
+    <div class="error-desc">你没有权限访问该页面</div>
     <div class="error-handle">
       <router-link to="/">
         <el-button type="primary" size="large">返回首页</el-button>

@@ -47,10 +47,14 @@ a {
 }
 
 .container {
-  padding: 30px;
+  padding: 20px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+
+hr{
+  border-color: rgba(228, 226, 226, 0.5);
 }
 
 .crumbs {

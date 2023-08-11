@@ -41,18 +41,18 @@
                 @click="submitForm(1)"
                 >登录</el-button
               >
-              <div
+              <!-- <div
                 class="forget-password"
                 v-if="!isPrivate"
                 @click="displayType.value = 'reset'"
               >
                 <span>忘记密码？</span>
-              </div>
+              </div> -->
             </div>
             <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
           </el-form>
         </el-tab-pane>
-        <el-tab-pane v-if="!isPrivate" label="验证码登录" name="msgLogin">
+        <!-- <el-tab-pane v-if="!isPrivate" label="验证码登录" name="msgLogin">
           <el-form class="ms-content" role="form" autocomplete="off">
             <el-form-item prop="phone">
               <el-input
@@ -99,7 +99,7 @@
               >
             </div>
           </el-form>
-        </el-tab-pane>
+        </el-tab-pane> -->
       </el-tabs>
     </div>
     <div class="ms-login" v-if="displayType === 'reset'">
@@ -450,7 +450,7 @@ export default {
             loading.value = false;
             ElMessage.error("登录失败");
           }
-        );
+        )
       }
     };
 

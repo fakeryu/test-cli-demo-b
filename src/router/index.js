@@ -4,11 +4,12 @@ import {
   createWebHistory,
 } from "vue-router";
 import Home from "../views/Home.vue";
+import FirstPageVue from "../views/FirstPage.vue";
 
 const routes = [
   {
     path: "/",
-    redirect: "/index",
+    redirect: "/first",
   },
   {
     path: "/",
@@ -16,13 +17,13 @@ const routes = [
     component: Home,
     children: [
       {
-        path: "/index",
-        name: "index",
+        path: "/first",
+        name: "FirstPage",
         meta: {
           title: "首页",
+          keepAlive: false,
         },
-        component: () =>
-          import(/* webpackChunkName: "dashboard" */ "../views/Welcome.vue"),
+        component: FirstPageVue,
       },
       {
         path: "/404",
@@ -30,8 +31,7 @@ const routes = [
         meta: {
           title: "找不到页面",
         },
-        component: () =>
-          import(/* webpackChunkName: "404" */ "../views/404.vue"),
+        component: () => import("../views/404.vue"),
       },
       {
         path: "/403",
@@ -39,29 +39,53 @@ const routes = [
         meta: {
           title: "没有权限",
         },
-        component: () =>
-          import(/* webpackChunkName: "403" */ "../views/403.vue"),
+        component: () => import("../views/403.vue"),
       },
-      // {
-      //   path: "/orgManage",
-      //   name: "orgManage",
-      //   meta: {
-      //     title: "组织管理",
-      //   },
-      //   component: () =>
-      //     import(
-      //       /* webpackChunkName: "orgManage" */ "../views/basicConfig/orgManage.vue"
-      //     ),
-      // }
-      // {
-      //   path: "/user",
-      //   name: "user",
-      //   meta: {
-      //     title: "个人中心",
-      //   },
-      //   component: () =>
-      //     import(/* webpackChunkName: "user" */ "../views/User.vue"),
-      // },
+      {
+        path: "/robot/message",
+        name: "RobotMessage",
+        meta: {
+          title: "机器人信息",
+          keepAlive: true,
+        },
+        component: () => import("../views/robot/RobotMessage.vue"),
+      },
+      {
+        path: "/robot/record",
+        name: "RobotRecord",
+        meta: {
+          title: "手术记录",
+          keepAlive: true,
+        },
+        component: () => import("../views/robot/RobotRecord.vue"),
+      },
+      {
+        path: "/robot/task",
+        name: "RobotTask",
+        meta: {
+          title: "机器人任务",
+          keepAlive: true,
+        },
+        component: () => import("../views/robot/RobotTask.vue"),
+      },
+      {
+        path: "/basic/org-manage",
+        name: "OrgManage",
+        meta: {
+          title: "机构管理",
+          keepAlive: true,
+        },
+        component: () => import("../views/basic/OrgManage.vue"),
+      },
+      {
+        path: "/basic/hos-manage",
+        name: "HosManage",
+        meta: {
+          title: "医院管理",
+          keepAlive: true,
+        },
+        component: () => import("../views/basic/HosManage.vue"),
+      },
     ],
   },
   {
@@ -70,13 +94,12 @@ const routes = [
     meta: {
       title: "登录",
     },
-    component: () =>
-      import(/* webpackChunkName: "login" */ "../views/Login.vue"),
+    component: () => import("../views/Login.vue"),
   },
   ,
   {
-    path: "/*",
-    redirect: "/index",
+    path: "/:catchAll(.*)", // 不识别的path自动匹配首页
+    redirect: "/first",
   },
 ];
 
@@ -86,17 +109,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} | vue-manage-demo`;
-  const token = sessionStorage.getItem("access_token");
-  if (!token && to.path !== "/login") {
-    next("/login");
-  } else if (to.meta.permission) {
-    // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
-    role === "admin" ? next() : next("/403");
-  } else {
-    next();
-  }
-  //  next()
+  document.title = `${to.meta.title} | 机器人管理系统`;
+  // const token = sessionStorage.getItem("access_token");
+  // if (!token && to.path !== "/login") {
+  //   next("/login");
+  // } else if (to.meta.permission) {
+  //   // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
+  //   role === "admin" ? next() : next("/403");
+  // } else {
+  //   next();
+  // }
+  next();
 });
 
 export default router;

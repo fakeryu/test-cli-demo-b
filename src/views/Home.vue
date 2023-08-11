@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2022-04-15 18:53:56
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-07 14:21:54
+ * @LastEditTime: 2023-08-11 09:18:15
  * @Description: 请填写简介
 -->
 <template>
@@ -15,9 +15,18 @@
         <router-view v-slot="{ Component }">
           <transition name="move" mode="out-in">
             <keep-alive :include="tagsList">
-              <component :is="Component" />
+              <component
+                :is="Component"
+                :key="route.name"
+                v-if="route.meta.keepAlive"
+              />
             </keep-alive>
           </transition>
+          <component
+            :is="Component"
+            :key="route.name"
+            v-if="!route.meta.keepAlive"
+          />
         </router-view>
         <!-- <el-backtop target=".content"></el-backtop> -->
       </div>
@@ -25,13 +34,21 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import vHeader from "../components/Header.vue";
 import vTags from "../components/Tags.vue";
 import vSidebar from "../components/Sidebar.vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const store = useStore();
-const tagsList = computed(() => store.state.tagsList.map((item) => item.name));
+
+onMounted(() => {
+  const tagsList = computed(() =>
+    store.state.tagsList.map((item) => item.name)
+  );
+});
+
 const collapse = computed(() => store.state.collapse);
 </script>
