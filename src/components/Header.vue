@@ -7,7 +7,7 @@
     <div class="header-right">
       <div class="header-user-con">
         <!-- 消息中心 -->
-        <div class="btn-bell">
+        <!-- <div class="btn-bell">
           <el-tooltip
             effect="dark"
             :content="message ? `有${message}条未读消息` : `消息中心`"
@@ -18,7 +18,7 @@
             </router-link>
           </el-tooltip>
           <span class="btn-bell-badge" v-show="message"></span>
-        </div>
+        </div> -->
         <!-- 用户头像 -->
         <!-- 用户名下拉菜单 -->
         <div class="user-avator">
@@ -57,7 +57,7 @@
 import { computed, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { logoutFunc } from "../api/loginService";
+import { logoutFunc } from "../service/loginService";
 import service from "../utils/request";
 import { HospInfo } from "../models/hosp-info";
 import { ElMessage } from "element-plus";
@@ -100,7 +100,7 @@ export default {
       );
     };
 
-    getHospInfo();
+    // getHospInfo();
 
     const logout = () => {
       logoutFunc().then((res) => {
@@ -209,3 +209,4 @@ export default {
   margin: 0 16px 0 20px;
 }
 </style>
+../service/loginService

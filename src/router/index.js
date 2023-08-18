@@ -9,7 +9,7 @@ import FirstPageVue from "../views/FirstPage.vue";
 const routes = [
   {
     path: "/",
-    redirect: "/first",
+    redirect: "/home",
   },
   {
     path: "/",
@@ -17,7 +17,7 @@ const routes = [
     component: Home,
     children: [
       {
-        path: "/first",
+        path: "/home",
         name: "FirstPage",
         meta: {
           title: "首页",
@@ -98,8 +98,8 @@ const routes = [
   },
   ,
   {
-    path: "/:catchAll(.*)", // 不识别的path自动匹配首页
-    redirect: "/first",
+    path: "/:catchAll(.*)", // 不识别的path自动匹配home
+    redirect: "/home",
   },
 ];
 

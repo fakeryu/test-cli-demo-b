@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2023-08-09 16:36:57
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-11 09:12:15
+ * @LastEditTime: 2023-08-15 13:34:14
  * @Description: 请填写简介
 -->
 <template>
@@ -19,7 +19,7 @@
           multiple
           collapse-tags
           collapse-tags-tooltip
-					:max-collapse-tags="2"
+          :max-collapse-tags="2"
           placeholder="请选择"
         >
           <el-option
@@ -45,57 +45,80 @@
           />
         </el-select>
       </div>
-      <el-button type="primary" size="small" @click="query()">查询</el-button>
+      <el-button type="primary" size="small" @click="query()"> 查询 </el-button>
     </div>
     <hr class="robot-record__hr" />
     <div>
       <div class="robot-record__content-btn">
         <el-button type="primary" size="small" @click="query()">
-          <i class="el-icon-plus"></i> 新增</el-button
-        >
-        <el-button type="primary" size="small" @click="query()">分配机器人任务</el-button>
+          <i class="el-icon-plus" /> 新增
+        </el-button>
+        <el-button type="primary" size="small" @click="query()">
+          分配机器人任务
+        </el-button>
       </div>
       <div>
-        <BaseTable></BaseTable>
+        <BaseTable />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onActivated, onDeactivated, reactive } from "vue";
-import BaseTable from "../../components/BaseTable.vue";
+import { onActivated, onDeactivated, reactive } from 'vue';
+import BaseTable from '../../components/BaseTable.vue';
+import { ElMessage } from 'element-plus';
+import service from '../../utils/request';
 const options = [
   {
-    value: "Option1",
-    label: "Option1",
+    value: 'Option1',
+    label: 'Option1'
   },
   {
-    value: "Option2",
-    label: "Option2",
+    value: 'Option2',
+    label: 'Option2'
   },
   {
-    value: "Option3",
-    label: "Option3",
+    value: 'Option3',
+    label: 'Option3'
   },
   {
-    value: "Option4",
-    label: "Option4",
+    value: 'Option4',
+    label: 'Option4'
   },
   {
-    value: "Option5",
-    label: "Option5",
-  },
+    value: 'Option5',
+    label: 'Option5'
+  }
 ];
 const queryParams = reactive({
-  robotName: "",
-  robotCode: "",
+  robotName: '',
+  robotCode: '',
   status: [],
-  org: "",
-  createDate: "",
+  org: '',
+  createDate: ''
 });
 
-const query = () => {};
+const query = () => {
+  service.post('indexPage', queryParams).then(
+    (res) => {
+      if (res['success']) {
+        // analyseData.data = res.data;
+      } else {
+        ElMessage({
+          message: '请求失败',
+          type: 'error'
+        });
+      }
+    },
+    (err) => {
+      ElMessage({
+        message: err,
+        type: 'error'
+      });
+    }
+  );
+};
 onActivated(() => {});
 onDeactivated(() => {});
 </script>
@@ -108,7 +131,7 @@ onDeactivated(() => {});
     justify-content: flex-start;
     align-items: baseline;
     flex-wrap: wrap;
-		font-size: 15px;
+    font-size: 15px;
     .robot-record__query {
       width: 350px;
       margin-bottom: 10px;

@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2022-07-06 09:14:19
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-11 08:45:42
+ * @LastEditTime: 2023-08-14 15:51:06
  * @Description: 请填写简介
 -->
 <template>
@@ -10,29 +10,24 @@
     <div class="first__header">
       <div class="first__select first__select-year">
         选择年：
-        <el-select
-          v-model="choiceYear"
+        <el-date-picker
+          type="year"
+          value-format="YYYY"
           placeholder="请选择"
-          @change="yearChange()"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+          v-model="queryParams.year"
+          @change="query()"
+        />
       </div>
 
       <div class="first__select first__select-hos">
         医院：
         <el-select
-          v-model="choiceHos"
+          v-model="queryParams.hospitalId"
           placeholder="请选择"
-          @change="hosChange()"
+          @change="query()"
         >
           <el-option
-            v-for="item in options"
+            v-for="item in hosOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -45,22 +40,22 @@
       <div class="first__nums">
         <div class="first__nums-left">
           <div class="first__nums-block">
-            <div>机器人总数<br />66</div>
+            <div>机器人总数<br />{{ analyseData.robotNum }}</div>
           </div>
           <div class="first__nums-block">
-            <div>机器人任务总数<br />66</div>
+            <div>机器人任务总数<br />{{ analyseData.taskNum }}</div>
           </div>
         </div>
         <div class="first__nums-right">
           <div class="first__nums-analyse">
             <div class="first__nums-analyse-item">
-              手术记录总数 {{ analyObj["a"] }} 个
+              手术记录总数 {{ analyseData["scheduleNum"] }} 个
             </div>
             <div class="first__nums-analyse-item">
-              任务处理比率 {{ analyObj["b"] }}
+              任务处理比率 {{ analyseData["taskRate"] }}
             </div>
             <div class="first__nums-analyse-item">
-              机器人利用率 {{ analyObj["c"] }}
+              机器人利用率 {{ analyseData["robotUseRate"] }}
             </div>
           </div>
           <div class="first__nums-progress">
@@ -69,8 +64,10 @@
               <el-progress
                 :text-inside="true"
                 :stroke-width="26"
-                :percentage="70"
-                :format="format"
+                :percentage="
+                  (analyseData.runningNum / analyseData.taskNum) * 100
+                "
+                :format="formatProgress"
               />
             </div>
             <div class="first__nums-progress-item">
@@ -78,9 +75,11 @@
               <el-progress
                 :text-inside="true"
                 :stroke-width="26"
-                :percentage="100"
+                :percentage="
+                  (analyseData.completedNum / analyseData.taskNum) * 100
+                "
                 status="success"
-                :format="format"
+                :format="formatDone"
               />
             </div>
           </div>
@@ -110,34 +109,17 @@
 import { onActivated, onDeactivated, onUnmounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import BaseChartsVue from "../components/BaseCharts.vue";
+import service from "../utils/request";
+import { ElMessage } from "element-plus";
 
 const store = useStore();
 const appConfig = store.state.appConfig;
-const choiceYear = ref("");
-const choiceHos = ref("");
+const queryParams = reactive({
+  year: "",
+  hospitalId: "",
+});
 const analyObj = { a: 1, b: 2, c: 3 };
-const options = [
-  {
-    value: "Option1",
-    label: "Option1",
-  },
-  {
-    value: "Option2",
-    label: "Option2",
-  },
-  {
-    value: "Option3",
-    label: "Option3",
-  },
-  {
-    value: "Option4",
-    label: "Option4",
-  },
-  {
-    value: "Option5",
-    label: "Option5",
-  },
-];
+const hosOptions = reactive([]);
 const optionsBar = reactive({
   type: "bar",
   title: {
@@ -171,17 +153,64 @@ const optionsPie = reactive({
     },
   ],
 });
-const format = (percentage) => {
-  return percentage === 100 ? 1 : `${percentage}%`;
-};
-const yearChange = () => {};
-const hosChange = () => {};
 
+const analyseData = reactive({
+  robotNum: "1",
+  taskNum: "1",
+  scheduleNum: "1",
+  taskRate: "1",
+  robotUseRate: "1",
+  runningNum: "1",
+  completedNum: "1",
+  deptRank: {
+    mapKey: {},
+  },
+  taskRank: {
+    mapKey: {},
+  },
+});
+
+const formatProgress = (percentage) => {
+  return analyseData.runningNum;
+};
+const formatDone = (percentage) => {
+  return analyseData.completedNum;
+};
+
+const query = () => {
+  service.post("indexPage", queryParams).then(
+    (res) => {
+      if (res.success) {
+        analyseData.data = res.data;
+      } else {
+        ElMessage({
+          message: "请求失败",
+          type: "error",
+        });
+      }
+    },
+    (err) => {
+      ElMessage({
+        message: err,
+        type: "error",
+      });
+    }
+  );
+};
+
+service.post("hospitalPage", { status: 1, page: { size: 999 } }).then((res) => {
+  let ar = res.data?.records.map((item) => {
+    return { value: item.hospitalId, label: item.hospitalName };
+  });
+  hosOptions.splice(0, 0, ...ar);
+});
+
+query(); //初始化查询
 onActivated(() => {});
 onDeactivated(() => {});
-onUnmounted(()=>{
-  console.log('first销毁组件');
-})
+onUnmounted(() => {
+  console.log("first销毁组件");
+});
 </script>
 
 <style scoped lang="scss">

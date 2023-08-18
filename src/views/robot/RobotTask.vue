@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2023-08-09 16:36:57
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-11 09:12:21
+ * @LastEditTime: 2023-08-15 11:46:23
  * @Description: 请填写简介
 -->
 <template>
@@ -10,7 +10,10 @@
     <div class="robot-task__header">
       <div class="robot-task__query">
         机器人编码：
-        <el-input v-model="queryParams.robotName" placeholder="请输入" />
+        <el-input
+          v-model="queryParams.robotName"
+          placeholder="请输入"
+        />
       </div>
       <div class="robot-task__query">
         手术类型：
@@ -33,8 +36,8 @@
       <div class="robot-task__query-daterange">
         创建时间：
         <el-date-picker
-          style="width: 400px"
           v-model="queryParams.createDate"
+          style="width: 400px"
           type="daterange"
           range-separator="To"
           start-placeholder="Start date"
@@ -43,7 +46,10 @@
       </div>
       <div class="robot-task__query">
         机器人名称：
-        <el-input v-model="queryParams.robotName" placeholder="请输入" />
+        <el-input
+          v-model="queryParams.robotName"
+          placeholder="请输入"
+        />
       </div>
       <div class="robot-task__query">
         任务状态：
@@ -65,7 +71,10 @@
       </div>
       <div class="robot-task__query">
         手术医院：
-        <el-select v-model="queryParams.org" placeholder="请选择">
+        <el-select
+          v-model="queryParams.org"
+          placeholder="请选择"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -76,15 +85,24 @@
       </div>
       <div class="robot-task__query">
         手术医生：
-        <el-input v-model="queryParams.robotName" placeholder="请输入" />
+        <el-input
+          v-model="queryParams.robotName"
+          placeholder="请输入"
+        />
       </div>
       <div class="robot-task__query">
         患者年龄：
-        <el-input v-model="queryParams.robotName" placeholder="请输入" />
+        <el-input
+          v-model="queryParams.robotName"
+          placeholder="请输入"
+        />
       </div>
       <div class="robot-task__query">
         患者性别：
-        <el-select v-model="queryParams.org" placeholder="请选择">
+        <el-select
+          v-model="queryParams.org"
+          placeholder="请选择"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -93,12 +111,18 @@
           />
         </el-select>
       </div>
-      <el-button type="primary" size="small" @click="query()">查询</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="query()"
+      >
+        查询
+      </el-button>
     </div>
-    <hr class="robot-task__hr" />
+    <hr class="robot-task__hr">
     <div>
       <div>
-        <BaseTable></BaseTable>
+        <BaseTable />
       </div>
     </div>
   </div>
@@ -107,6 +131,8 @@
 <script setup lang="ts">
 import { onActivated, onDeactivated, reactive } from "vue";
 import BaseTable from "../../components/BaseTable.vue";
+import { ElMessage } from "element-plus";
+import service from "../../utils/request";
 const options = [
   {
     value: "Option1",
@@ -137,7 +163,26 @@ const queryParams = reactive({
   createDate: "",
 });
 
-const query = () => {};
+const query = () => {
+  service.post("indexPage", queryParams).then(
+    (res) => {
+      if (res['success']) {
+        // analyseData.data = res.data;
+      } else {
+        ElMessage({
+          message: "请求失败",
+          type: "error",
+        });
+      }
+    },
+    (err) => {
+      ElMessage({
+        message: err,
+        type: "error",
+      });
+    }
+  );
+};
 onActivated(() => {});
 onDeactivated(() => {});
 </script>

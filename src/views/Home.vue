@@ -2,30 +2,36 @@
  * @Author: berg yu
  * @Date: 2022-04-15 18:53:56
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-11 09:18:15
+ * @LastEditTime: 2023-08-15 13:18:53
  * @Description: 请填写简介
 -->
 <template>
   <div class="about">
     <v-header />
     <v-sidebar />
-    <div class="content-box" :class="{ 'content-collapse': collapse }">
-      <v-tags></v-tags>
+    <div
+      class="content-box"
+      :class="{ 'content-collapse': collapse }"
+    >
+      <v-tags />
       <div class="content">
         <router-view v-slot="{ Component }">
-          <transition name="move" mode="out-in">
+          <transition
+            name="move"
+            mode="out-in"
+          >
             <keep-alive :include="tagsList">
               <component
                 :is="Component"
-                :key="route.name"
                 v-if="route.meta.keepAlive"
+                :key="route.name"
               />
             </keep-alive>
           </transition>
           <component
             :is="Component"
-            :key="route.name"
             v-if="!route.meta.keepAlive"
+            :key="route.name"
           />
         </router-view>
         <!-- <el-backtop target=".content"></el-backtop> -->
@@ -34,21 +40,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
-import { useStore } from "vuex";
-import vHeader from "../components/Header.vue";
-import vTags from "../components/Tags.vue";
-import vSidebar from "../components/Sidebar.vue";
-import { useRoute } from "vue-router";
+import { computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import vHeader from '../components/Header.vue'
+import vTags from '../components/Tags.vue'
+import vSidebar from '../components/Sidebar.vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
-const store = useStore();
+const route = useRoute()
+const store = useStore()
+const tagsList = computed(() => store.state.tagsList.map((item) => item.name))
+// onMounted(() => {});
 
-onMounted(() => {
-  const tagsList = computed(() =>
-    store.state.tagsList.map((item) => item.name)
-  );
-});
-
-const collapse = computed(() => store.state.collapse);
+const collapse = computed(() => store.state.collapse)
 </script>

@@ -1,11 +1,12 @@
 {
-  "name": "{{ name }}",
+  "name": "srm-web",
   "version": "5.1.0",
-  "description": "{{ description }}",
+  "description": "",
   "private": true,
-  "author": "{{ author }}",
+  "author": "bergY",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "start": "vite --host 0.0.0.0",
     "build": "vite build",
     "serve": "vite preview --host 127.0.0.1"
   },
@@ -13,6 +14,7 @@
     "amfe-flexible": "^2.2.1",
     "axios": "^0.21.1",
     "element-plus": "1.0.2-beta.52",
+    "typescript": "^5.1.6",
     "vue": "^3.1.2",
     "vue-cropperjs": "^5.0.0",
     "vue-i18n": "^9.0.0",
@@ -22,9 +24,14 @@
     "wangeditor": "^4.7.4"
   },
   "devDependencies": {
+    "@types/node": "^20.5.0",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.1.2",
     "crypto-js": "^4.1.1",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.17.0",
     "postcss-pxtorem": "^6.0.0",
     "px2rem-loader": "^0.1.9",
     "sass": "^1.53.0",

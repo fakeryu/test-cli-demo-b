@@ -8,105 +8,74 @@
       </el-breadcrumb>
     </div> -->
     <div class="container">
-      <!-- <div class="handle-box">
-        <el-select
-          v-model="query.address"
-          placeholder="地址"
-          class="handle-select mr10"
-        >
-          <el-option key="1" label="广东省" value="广东省"></el-option>
-          <el-option key="2" label="湖南省" value="湖南省"></el-option>
-        </el-select>
-        <el-input
-          v-model="query.name"
-          placeholder="用户名"
-          class="handle-input mr10"
-        ></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch"
-          >搜索</el-button
-        >
-      </div> -->
       <el-table
-        :data="tableData"
+        :data="tableParams['value']"
         border
+        height="500"
         class="table"
         ref="multipleTable"
         header-cell-class-name="table-header"
+        empty-text="暂无数据"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
-        <el-table-column
-          prop="id"
-          label="ID"
-          width="55"
-          align="center"
-        ></el-table-column>
-        <el-table-column prop="name" label="用户名"></el-table-column>
-        <el-table-column label="账户余额">
-          <template #default="scope">￥{{ scope.row.money }}</template>
-        </el-table-column>
-        <el-table-column label="头像(查看大图)" align="center">
-          <template #default="scope">
-            <el-image
-              class="table-td-thumb"
-              :src="scope.row.thumb"
-              :preview-src-list="[scope.row.thumb]"
-            >
-            </el-image>
-          </template>
-        </el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
-        <el-table-column label="状态" align="center">
-          <template #default="scope">
-            <el-tag
-              :type="
-                scope.row.state === '成功'
-                  ? 'success'
-                  : scope.row.state === '失败'
-                  ? 'danger'
-                  : ''
-              "
-              >{{ scope.row.state }}</el-tag
-            >
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="date" label="注册时间"></el-table-column>
-        <el-table-column label="操作" width="180" align="center">
-          <template #default="scope">
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              @click="handleEdit(scope.$index, scope.row)"
-              >编辑
-            </el-button>
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              @click="handleEdit(scope.$index, scope.row)"
-              >查看
-            </el-button>
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-              class="red"
-              @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
+        <template v-for="item of tableParams['cols']" :key="item.prop">
+          <el-table-column
+            v-if="item.prop == 'selection'"
+            type="selection"
+            align="center"
+            width="55"
+          />
+          <el-table-column
+            v-else-if="
+              item.prop !== 'selection' &&
+              item.prop !== 'status' &&
+              item.prop !== 'operator'
+            "
+            :prop="item.prop"
+            :label="item.label"
+            :width="item.width || null"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            v-else-if="item.prop == 'status'"
+            :prop="item.prop"
+            label="状态"
+            width="180"
+            align="center"
+          >
+            <template #default="scope">
+              <el-switch
+                v-model="scope.row.status"
+                @change="switchStatus(scope.row)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-else-if="item.prop == 'operator'"
+            :prop="item.prop"
+            label="操作"
+            width="180"
+            align="center"
+          >
+            <template #default="scope">
+              <slot name="operator" :scope="scope"></slot>
+            </template>
+          </el-table-column>
+        </template>
       </el-table>
-      <div class="pagination">
-        <div>共 {{ 400 }} 条记录 第 {{ 1 }} / {{ 80 }} 页</div>
+      <div class="pagination" v-if="!!pageParam">
+        <div>
+          共 {{ pageParam.total }} 条记录 第 {{ pageParam.current }} /
+          {{ pageParam.pages }} 页
+        </div>
+        <!-- v-model:page-size="pageParam.size" -->
         <el-pagination
-          v-model:current-page="currentPage4"
-          v-model:page-size="pageSize4"
-          :page-sizes="[100, 200, 300, 400]"
-          :small="small"
-          :disabled="disabled"
+          v-model:current-page="tableParams['pm']['current']"
+          :page-sizes="tableParams['pm']['sizes'] || [10, 20, 30, 40]"
+          :disabled="false"
           background
           layout="prev, pager, next, sizes, slot"
-          :total="400"
+          :total="tableParams['pm']['total']"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         >
@@ -137,94 +106,73 @@
   </div>
 </template>
 
-<script>
-import { ref, reactive } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
-import service from "../utils/request";
+<script setup lang="ts">
+import { ref, reactive, defineProps, defineEmit } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import service from '../utils/request'
+import type { Page } from '~/models/page'
+import { WNewTable } from '~/service/w-table'
 
-export default {
-  name: "basetable",
-  setup() {
-    const query = reactive({
-      address: "",
-      name: "",
-      pageIndex: 1,
-      pageSize: 10,
-    });
-    const tableData = ref([]);
-    const pageTotal = ref(0);
-    // 获取表格数据
-    const getData = () => {
-      service(query).then((res) => {
-        tableData.value = res.list;
-        pageTotal.value = res.pageTotal || 50;
-      });
-    };
-    getData();
+const currentPage1 = ref(1)
+const pageSize2 = ref(100)
 
-    // 查询操作
-    const handleSearch = () => {
-      query.pageIndex = 1;
-      getData();
-    };
-    // 分页导航
-    const handlePageChange = (val) => {
-      query.pageIndex = val;
-      getData();
-    };
+interface Coloumn {
+  prop: string
+  label: string
+  type?: string
+  width?: string | number
+}
 
-    // 删除操作
-    const handleDelete = (index) => {
-      // 二次确认删除
-      ElMessageBox.confirm("确定要删除吗？", "提示", {
-        type: "warning",
-      })
-        .then(() => {
-          ElMessage.success("删除成功");
-          tableData.value.splice(index, 1);
-        })
-        .catch(() => {});
-    };
+defineProps<{
+  columns: Coloumn[]
+  pageParam?: Page
+  tableData: Object[]
+  tableParams: Object
+}>()
+const emits = defineEmit([
+  'selectionChange',
+  'statusChange',
+  'currentChange',
+  'sizeChange'
+])
 
-    // 表格编辑时弹窗和保存
-    const editVisible = ref(false);
-    let form = reactive({
-      name: "",
-      address: "",
-    });
-    let idx = -1;
-    const handleEdit = (index, row) => {
-      idx = index;
-      Object.keys(form).forEach((item) => {
-        form[item] = row[item];
-      });
-      editVisible.value = true;
-    };
-    const saveEdit = () => {
-      editVisible.value = false;
-      ElMessage.success(`修改第 ${idx + 1} 行成功`);
-      Object.keys(form).forEach((item) => {
-        tableData.value[idx][item] = form[item];
-      });
-    };
-    const handleSelectionChange = (val) => {
-      multipleSelection.value = val;
-    };
+// 表格编辑时弹窗和保存
+const editVisible = ref(false)
+let form = reactive({
+  name: '',
+  address: ''
+})
+let idx = -1
+const handleEdit = (index, row) => {
+  idx = index
+  Object.keys(form).forEach((item) => {
+    form[item] = row[item]
+  })
+  editVisible.value = true
+}
+const saveEdit = () => {
+  editVisible.value = false
+  ElMessage.success(`修改第 ${idx + 1} 行成功`)
+  Object.keys(form).forEach((item) => {
+    // tableData.value[idx][item] = form[item]
+  })
+}
+const handleSelectionChange = (val) => {
+  // multipleSelection.value = val
+  emits('selectionChange', val)
+}
+const handleSizeChange = (val: number) => {
+  emits('sizeChange', val)
+  // console.log(`${val} items per page`)
+}
+const handleCurrentChange = (val: number) => {
+  emits('currentChange', val)
+  // console.log(`current page: ${val}`)
+}
 
-    return {
-      query,
-      tableData,
-      pageTotal,
-      editVisible,
-      form,
-      handleSearch,
-      handlePageChange,
-      handleDelete,
-      handleEdit,
-      saveEdit,
-    };
-  },
-};
+const switchStatus = (row) => {
+  emits('statusChange', row)
+}
 </script>
 
 <style scoped>

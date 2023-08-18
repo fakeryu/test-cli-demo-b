@@ -1,36 +1,53 @@
 <template>
   <header class="login-header">
-    <img class="system-logo" src="../assets/img/login/logo.png" alt="LOGO" />{{
+    <img
+      class="system-logo"
+      src="../assets/img/login/logo.png"
+      alt="LOGO"
+    >{{
       appConfig.systemName
     }}
   </header>
   <div class="login-wrap">
-    <div class="ms-login" v-if="displayType === 'login'">
-      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-        <el-tab-pane :label="isPrivate ? '登录' : '密码登录'" name="passLogin">
+    <div
+      v-if="displayType === 'login'"
+      class="ms-login"
+    >
+      <el-tabs
+        v-model="activeName"
+        class="demo-tabs"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          :label="isPrivate ? '登录' : '密码登录'"
+          name="passLogin"
+        >
           <el-form
+            ref="login"
             :model="user"
             :rules="rules"
-            ref="login"
             label-width="0px"
             class="ms-content"
           >
             <el-form-item prop="loginName">
-              <el-input v-model="user.loginName" placeholder="手机号">
+              <el-input
+                v-model="user.loginName"
+                placeholder="手机号"
+              >
                 <template #prepend>
-                  <el-button icon="el-icon-user"></el-button>
+                  <el-button icon="el-icon-user" />
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input
+                v-model="user.password"
                 type="password"
                 placeholder="登录密码"
-                v-model="user.password"
                 @keyup.enter="submitForm(1)"
               >
                 <template #prepend>
-                  <el-button icon="el-icon-lock"></el-button>
+                  <el-button icon="el-icon-lock" />
                 </template>
               </el-input>
             </el-form-item>
@@ -39,8 +56,9 @@
                 type="primary"
                 :loading="loading"
                 @click="submitForm(1)"
-                >登录</el-button
               >
+                登录
+              </el-button>
               <!-- <div
                 class="forget-password"
                 v-if="!isPrivate"
@@ -102,32 +120,45 @@
         </el-tab-pane> -->
       </el-tabs>
     </div>
-    <div class="ms-login" v-if="displayType === 'reset'">
-      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-        <el-tab-pane label="密码登录" name="passLogin">
+    <div
+      v-if="displayType === 'reset'"
+      class="ms-login"
+    >
+      <el-tabs
+        v-model="activeName"
+        class="demo-tabs"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="密码登录"
+          name="passLogin"
+        >
           <el-form
+            ref="login"
             :model="user"
             :rules="rules"
-            ref="login"
             label-width="0px"
             class="ms-content"
           >
             <el-form-item prop="loginName">
-              <el-input v-model="user.loginName" placeholder="手机号">
+              <el-input
+                v-model="user.loginName"
+                placeholder="手机号"
+              >
                 <template #prepend>
-                  <el-button icon="el-icon-user"></el-button>
+                  <el-button icon="el-icon-user" />
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input
+                v-model="user.password"
                 type="password"
                 placeholder="登录密码"
-                v-model="user.password"
                 @keyup.enter="submitForm(1)"
               >
                 <template #prepend>
-                  <el-button icon="el-icon-lock"></el-button>
+                  <el-button icon="el-icon-lock" />
                 </template>
               </el-input>
             </el-form-item>
@@ -136,14 +167,22 @@
                 type="primary"
                 :loading="loading"
                 @click="submitForm(1)"
-                >登录</el-button
               >
+                登录
+              </el-button>
             </div>
             <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="验证码登录" name="msgLogin">
-          <el-form class="ms-content" role="form" autocomplete="off">
+        <el-tab-pane
+          label="验证码登录"
+          name="msgLogin"
+        >
+          <el-form
+            class="ms-content"
+            role="form"
+            autocomplete="off"
+          >
             <el-form-item prop="phone">
               <el-input
                 v-model="user.phone"
@@ -151,11 +190,14 @@
                 max="99999999999"
               >
                 <template #prepend>
-                  <el-button icon="el-icon-user"></el-button>
+                  <el-button icon="el-icon-user" />
                 </template>
               </el-input>
             </el-form-item>
-            <el-form-item prop="authCode" class="msg-ver">
+            <el-form-item
+              prop="authCode"
+              class="msg-ver"
+            >
               <el-input
                 ref="authCode"
                 v-model="user.authCode"
@@ -163,61 +205,77 @@
                 type="number"
                 max="99999999999"
                 @keyup.enter="submitForm(2)"
-                >>
+              >
+                >
                 <template #prepend>
-                  <el-button icon="el-icon-lock"></el-button>
+                  <el-button icon="el-icon-lock" />
                 </template>
               </el-input>
               <el-button
                 class="verify-btn"
                 :class="{ 'verify-disabled': isVerifying }"
-                @click="getAuthCode(user.phone)"
                 :disabled="isVerifying || !user.phone"
                 type="primary"
-                >{{
-                  isVerifying ? time + "\r\n重新发送" : "发送验证码"
-                }}</el-button
+                @click="getAuthCode(user.phone)"
               >
+                {{
+                  isVerifying ? time + "\r\n重新发送" : "发送验证码"
+                }}
+              </el-button>
             </el-form-item>
             <div class="login-btn">
               <el-button
                 type="primary"
                 :class="{ 'btn-disabled': loading }"
-                @click="submitForm(2)"
                 :disabled="loading"
-                >{{ loading ? "登录中..." : "登录" }}</el-button
+                @click="submitForm(2)"
               >
+                {{ loading ? "登录中..." : "登录" }}
+              </el-button>
             </div>
           </el-form>
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="ms-login" v-if="displayType === 'change'">
-      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-        <el-tab-pane label="密码登录" name="passLogin">
+    <div
+      v-if="displayType === 'change'"
+      class="ms-login"
+    >
+      <el-tabs
+        v-model="activeName"
+        class="demo-tabs"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="密码登录"
+          name="passLogin"
+        >
           <el-form
+            ref="login"
             :model="user"
             :rules="rules"
-            ref="login"
             label-width="0px"
             class="ms-content"
           >
             <el-form-item prop="loginName">
-              <el-input v-model="user.loginName" placeholder="手机号">
+              <el-input
+                v-model="user.loginName"
+                placeholder="手机号"
+              >
                 <template #prepend>
-                  <el-button icon="el-icon-user"></el-button>
+                  <el-button icon="el-icon-user" />
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input
+                v-model="user.password"
                 type="password"
                 placeholder="登录密码"
-                v-model="user.password"
                 @keyup.enter="submitForm(1)"
               >
                 <template #prepend>
-                  <el-button icon="el-icon-lock"></el-button>
+                  <el-button icon="el-icon-lock" />
                 </template>
               </el-input>
             </el-form-item>
@@ -226,14 +284,22 @@
                 type="primary"
                 :loading="loading"
                 @click="submitForm(1)"
-                >登录</el-button
               >
+                登录
+              </el-button>
             </div>
             <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="验证码登录" name="msgLogin">
-          <el-form class="ms-content" role="form" autocomplete="off">
+        <el-tab-pane
+          label="验证码登录"
+          name="msgLogin"
+        >
+          <el-form
+            class="ms-content"
+            role="form"
+            autocomplete="off"
+          >
             <el-form-item prop="phone">
               <el-input
                 v-model="user.phone"
@@ -241,11 +307,14 @@
                 max="99999999999"
               >
                 <template #prepend>
-                  <el-button icon="el-icon-user"></el-button>
+                  <el-button icon="el-icon-user" />
                 </template>
               </el-input>
             </el-form-item>
-            <el-form-item prop="authCode" class="msg-ver">
+            <el-form-item
+              prop="authCode"
+              class="msg-ver"
+            >
               <el-input
                 ref="authCode"
                 v-model="user.authCode"
@@ -253,30 +322,33 @@
                 type="number"
                 max="99999999999"
                 @keyup.enter="submitForm(2)"
-                >>
+              >
+                >
                 <template #prepend>
-                  <el-button icon="el-icon-lock"></el-button>
+                  <el-button icon="el-icon-lock" />
                 </template>
               </el-input>
               <el-button
                 class="verify-btn"
                 :class="{ 'verify-disabled': isVerifying }"
-                @click="getAuthCode(user.phone)"
                 :disabled="isVerifying || !user.phone"
                 type="primary"
-                >{{
-                  isVerifying ? time + "\r\n重新发送" : "发送验证码"
-                }}</el-button
+                @click="getAuthCode(user.phone)"
               >
+                {{
+                  isVerifying ? time + "\r\n重新发送" : "发送验证码"
+                }}
+              </el-button>
             </el-form-item>
             <div class="login-btn">
               <el-button
                 type="primary"
                 :class="{ 'btn-disabled': loading }"
-                @click="submitForm(2)"
                 :disabled="loading"
-                >{{ loading ? "登录中..." : "登录" }}</el-button
+                @click="submitForm(2)"
               >
+                {{ loading ? "登录中..." : "登录" }}
+              </el-button>
             </div>
           </el-form>
         </el-tab-pane>
@@ -284,7 +356,10 @@
     </div>
   </div>
   <footer class="login-footer">
-    <img src="../assets/img/login/version.png" class="system-version" />
+    <img
+      src="../assets/img/login/version.png"
+      class="system-version"
+    >
     Copyright © Rivamed Corporation, All Rights Reserved &nbsp;&nbsp;{{
       appConfig.systemVersion
     }}
@@ -373,7 +448,7 @@ export default {
     const doLogin = (loginType) => {
       if (loginErrorTimes > 4) {
         ElMessageBox.confirm(
-          isPrivate
+          isPrivate.value
             ? "输入错误密码次数超限，账户锁定中。您可稍后再尝试登录!"
             : "输入错误密码次数超限，账户锁定中。您可稍后再尝试登录或使用手机验证码登录!",
           "",
@@ -636,3 +711,4 @@ export default {
   color: #fff;
 }
 </style>
+../service/loginService

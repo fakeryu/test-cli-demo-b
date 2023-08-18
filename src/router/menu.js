@@ -2,14 +2,14 @@
  * @Author: berg yu
  * @Date: 2023-08-08 15:03:39
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-11 09:46:53
+ * @LastEditTime: 2023-08-10 09:57:25
  * @Description: 菜单
  */
 
 export const menuConfig = [
   {
     icon: "el-icon-house",
-    index: "/first",
+    index: "/home",
     title: "首页",
   },
   {

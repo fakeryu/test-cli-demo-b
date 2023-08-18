@@ -79,7 +79,26 @@ const queryParams = reactive({
   createDate: "",
 });
 
-const query = () => {};
+const query = () => {
+  service.post("indexPage", queryParams).then(
+    (res) => {
+      if (res.success) {
+        analyseData.data = res.data;
+      } else {
+        ElMessage({
+          message: "请求失败",
+          type: "error",
+        });
+      }
+    },
+    (err) => {
+      ElMessage({
+        message: err,
+        type: "error",
+      });
+    }
+  );
+};
 onActivated(() => {});
 onDeactivated(() => {});
 </script>

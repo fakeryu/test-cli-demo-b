@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2022-04-15 18:53:56
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-07 10:56:16
+ * @LastEditTime: 2023-08-15 10:59:51
  * @Description: 请填写简介
  */
 import vue from "@vitejs/plugin-vue";
@@ -19,7 +19,7 @@ export default defineConfig({
   base: "./",
   resolve: {
     alias: {
-      "~/": `${pathSrc}/`,
+      "~": `${pathSrc}`,
     },
   },
   plugins: [
@@ -46,8 +46,9 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/bsp": "http://192.168.10.113:8111",
-      "/orbm": "http://192.168.111.135:8051",
+      "/srm":' http://192.168.111.135:8089',
+      // "/bsp": "http://192.168.10.113:8111",
+      // "/orbm": "http://192.168.111.135:8051",
     },
   },
 });
