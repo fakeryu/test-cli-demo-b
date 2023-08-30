@@ -2,11 +2,11 @@
  * @Author: berg yu
  * @Date: 2023-08-18 15:34:42
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-18 16:50:37
+ * @LastEditTime: 2023-08-18 17:11:13
  * @Description: 表类
  */
 import service from '~/utils/request'
-import { Page } from '../models/page'
+import { Page } from './page'
 import { ElMessage } from 'element-plus'
 
 interface Col {

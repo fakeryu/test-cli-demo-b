@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2023-08-09 16:36:57
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-18 16:56:10
+ * @LastEditTime: 2023-08-29 16:28:10
  * @Description: 请填写简介
 -->
 <template>
@@ -21,99 +21,62 @@
         <!-- multiple
           collapse-tags
           collapse-tags-tooltip -->
-        <el-select
-          :clearable="true"
-          v-model="queryParams.maintenanceStatus"
-          :max-collapse-tags="2"
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+        <el-select :clearable="true" v-model="queryParams.maintenanceStatus" :max-collapse-tags="2" placeholder="请选择">
+          <el-option v-for="item in maintainOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </div>
       <div class="robot-message__query">
         所属机构：
-        <el-select
-          :clearable="true"
-          v-model="queryParams.manufacturerId"
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in orgOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+        <el-select :clearable="true" v-model="queryParams.manufacturerId" placeholder="请选择">
+          <el-option v-for="item in orgOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </div>
       <div class="robot-message__query">
         创建时间：
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD"
-          type="date"
-          placeholder="请选择"
-        />
+        <el-date-picker v-model="queryParams.createTime" value-format="YYYY-MM-DD" type="date" placeholder="请选择" />
       </div>
-      <el-button type="primary" size="small" @click="query()"> 查询 </el-button>
+      <el-button type="primary" @click="query()"> 查询 </el-button>
     </div>
     <hr class="robot-message__hr" />
     <div>
       <div class="robot-message__content-btn">
-        <el-button type="primary" size="small" @click="addRobot()">
-          <i class="el-icon-plus" /> 新增
+        <el-button type="primary" @click="addRobot()">
+          <el-icon>
+            <Plus />
+          </el-icon> 新增
         </el-button>
-        <el-button
-          type="primary"
-          :disabled="!delArr.length"
-          size="small"
-          @click="deleteData()"
-        >
+        <el-button type="primary" :disabled="!delArr.length" @click="deleteData()">
           删除
         </el-button>
       </div>
       <div>
-        <BaseTable
-          :tableParams="newDt"
-          :columns="newDt.cols"
-          :tableData="newDt.value"
-          :pageParam="newDt.pm"
-          @selectionChange="selectionChange"
-          @currentChange="newDt.onPage($event)"
-          @sizeChange="newDt.onSize($event)"
-        >
-          <template #operator="slotProps">
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              @click="handleEdit(slotProps.scope.row)"
-              >编辑
-            </el-button>
-            <el-button
-              type="text"
-              icon="el-icon-edit"
-              @click="handleDetail(slotProps.scope.row)"
-              >查看
-            </el-button></template
-          >
+        <BaseTable :tableParams="newDt" :columns="newDt.cols" :tableData="newDt.value" :pageParam="newDt.pm"
+          @selectionChange="selectionChange" @currentChange="newDt.onPage($event)" @sizeChange="newDt.onSize($event)">
+          <template #custome="{ item }">
+            <el-table-column v-if="item.prop == 'operator'" :prop="item.prop" label="操作" width="180" align="center">
+              <template #default="scope">
+                <el-button type="text" @click="handleEdit(scope.row)">
+                  <el-icon>
+                    <Edit />
+                  </el-icon> 编辑
+                </el-button>
+                <el-button type="text" @click=" handleDetail(scope.row)">
+                  <el-icon>
+                    <Search />
+                  </el-icon>查看
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column v-else :prop="item.prop" :label="item.label" :width="item.width || null"
+              align="center"></el-table-column>
+          </template>
         </BaseTable>
       </div>
     </div>
   </div>
 
-  <el-dialog v-model="patchVisible" title="机器人新增or编辑">
-    <el-form
-      ref="ruleFormRef"
-      :model="addParams"
-      :rules="rules"
-      label-width="120px"
-      class="demo-ruleForm"
-      status-icon
-    >
+  <el-dialog v-model="patchVisible" @close="resetForm(ruleFormRef)" title="机器人新增or编辑">
+    <el-form ref="ruleFormRef" :model="addParams" :rules="rules" label-width="120px" class="demo-ruleForm" status-icon>
       <el-form-item label="机器人名称" prop="robotName">
         <el-input v-model="addParams.robotName" placeholder="请输入" />
       </el-form-item>
@@ -124,41 +87,18 @@
         <el-input v-model="addParams.robotModel" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="所属机构" prop="manufacturerId">
-        <el-select
-          @change="manufacturerChange"
-          value-key="value"
-          placeholder="请选择"
-          v-model="addParams.manufacturerId"
-        >
-          <el-option
-            v-for="item in orgOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+        <el-select @change="manufacturerChange" value-key="value" placeholder="请选择" v-model="addParams.manufacturerId">
+          <el-option v-for="item in orgOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="擅长手术" prop="adeptId">
-        <el-select
-          value-key="value"
-          placeholder="请选择"
-          v-model="addParams.adeptId"
-        >
-          <el-option
-            v-for="item in adeptOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+        <el-select value-key="value" placeholder="请选择" v-model="addParams.adeptId">
+          <el-option v-for="item in adeptOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="addParams.remark"
-          :autosize="{ minRows: 2, maxRows: 4 }"
-          type="textarea"
-          placeholder="请输入..."
-        />
+        <el-input v-model="addParams.remark" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
+          placeholder="请输入..." />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(ruleFormRef)">
@@ -202,31 +142,13 @@
 <script setup lang="ts">
 import { nextTick, onActivated, onDeactivated, reactive, ref } from 'vue'
 import BaseTable from '~/components/BaseTable.vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import service from '~/utils/request'
 import { clearNoValidProp } from '~/utils/tools'
 import type { ElForm } from 'element-plus'
 import { Page } from '~/models/page'
-import { WNewTable } from '~/service/w-table'
+import { WNewTable } from '~/models/w-table'
+import { adeptOptions, maintainOptions } from '~/api/mock'
 
-const options = [
-  {
-    value: 1,
-    label: '使用中'
-  },
-  {
-    value: 0,
-    label: '空闲'
-  }
-]
-
-const tableData: Object[] = reactive([])
-const pageParam: Page = reactive({
-  pages: 1,
-  total: 1,
-  size: 10,
-  current: 1
-})
 const queryParams = reactive({
   robotCode: '',
   robotName: '',
@@ -325,11 +247,6 @@ const rules = reactive({
     }
   ]
 })
-const adeptOptions = [
-  { value: 1, label: '腔镜手术' },
-  { value: 2, label: '骨科手术' },
-  { value: 3, label: '开颅手术' }
-]
 const ruleFormRef = ref<FormInstance>()
 const orgOptions: Array<{ value: string; label: string }> = reactive([])
 const patchVisible = ref(false)
@@ -360,7 +277,35 @@ const query = () => {
 }
 
 const delArr: Array<string> = reactive([])
+// 删除操作
+// const handleDelete = (index) => {
+//   // 二次确认删除
+//   ElMessageBox.confirm('确定要删除吗？', '提示', {
+//     type: 'warning'
+//   })
+//     .then(() => {
+//       ElMessage.success('删除成功')
+//       // tableData.splice(index, 1)
+//     })
+//     .catch(() => { })
+// }
+
+const manufacturerChange = (val) => {
+  addParams.manufacturerId = val
+}
+
+const selectionChange = (data) => {
+  const tranD = data.map((item) => item.robotId)
+  delArr.splice(0, delArr.length, ...tranD)
+  console.log('selectionChange', delArr)
+}
+
+const addRobot = () => {
+  patchVisible.value = true
+}
+
 const deleteData = () => {
+  //@ts-ignore
   ElMessageBox({
     title: '删除机器人',
     message: '确认删除选中机器人吗？',
@@ -382,6 +327,7 @@ const deleteData = () => {
               if (res['success']) {
                 done()
                 instance.confirmButtonLoading = false
+                //@ts-ignore
                 ElMessage({
                   message: '删除成功',
                   type: 'success'
@@ -390,6 +336,7 @@ const deleteData = () => {
               } else {
                 done()
                 instance.confirmButtonLoading = false
+                //@ts-ignore
                 ElMessage({
                   message: '删除失败',
                   type: 'error'
@@ -399,6 +346,7 @@ const deleteData = () => {
             (err: Error) => {
               done()
               instance.confirmButtonLoading = false
+              //@ts-ignore
               ElMessage({
                 message: err.message,
                 type: 'error'
@@ -411,32 +359,6 @@ const deleteData = () => {
       }
     }
   })
-}
-// 删除操作
-const handleDelete = (index) => {
-  // 二次确认删除
-  ElMessageBox.confirm('确定要删除吗？', '提示', {
-    type: 'warning'
-  })
-    .then(() => {
-      ElMessage.success('删除成功')
-      // tableData.splice(index, 1)
-    })
-    .catch(() => {})
-}
-
-const manufacturerChange = (val) => {
-  addParams.manufacturerId = val
-}
-
-const selectionChange = (data) => {
-  const tranD = data.map((item) => item.robotId)
-  delArr.splice(0, delArr.length, ...tranD)
-  console.log('selectionChange', delArr)
-}
-
-const addRobot = () => {
-  patchVisible.value = true
 }
 
 const handleEdit = (row) => {
@@ -457,14 +379,16 @@ const handleDetail = (row) => {
     for (const key in showDetail) {
       if (Object.prototype.hasOwnProperty.call(showDetail, key)) {
         if (row[key]) {
-          showDetail[key] = row[key]
+          if (key == 'adeptId') {
+            showDetail['adeptName'] = adeptOptions.find(
+              (item) => item.value == row[key]
+            )?.label
+          } else {
+            showDetail[key] = row[key]
+          }
         }
       }
     }
-    showDetail['adeptName'] = adeptOptions.find(
-      (item) => item.value == showDetail['adeptId']
-    )?.label
-    console.log(showDetail)
   })
 }
 
@@ -476,12 +400,14 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       service.post('robotChange', param).then(
         (res: Object) => {
           if (res['success']) {
+            //@ts-ignore
             ElMessage({
               message: param.robotId ? '编辑成功' : '新增成功',
               type: 'success'
             })
             query()
           } else {
+            //@ts-ignore
             ElMessage({
               message: param.robotId ? '编辑失败' : '新增失败',
               type: 'error'
@@ -489,6 +415,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           }
         },
         (err: Error) => {
+          //@ts-ignore
           ElMessage({
             message: err.message,
             type: 'error'
@@ -510,34 +437,40 @@ const resetForm = (formEl: FormInstance | undefined) => {
   patchVisible.value = false
 }
 
-onActivated(() => {})
-onDeactivated(() => {})
+onActivated(() => { })
+onDeactivated(() => { })
 </script>
 
 <style scoped lang="scss">
 .container {
   height: 100%;
+
   .robot-message__header {
     display: inline-flex;
     justify-content: flex-start;
     align-items: baseline;
     flex-wrap: wrap;
     font-size: 15px;
+
     .robot-message__query {
       width: 350px;
       margin-bottom: 10px;
+
       .el-input {
         width: 240px;
       }
+
       .el-select {
         width: 240px;
       }
     }
+
     .el-button {
       height: 35px;
     }
   }
 }
+
 .robot-message__content-btn {
   margin-bottom: 10px;
 }
@@ -547,3 +480,4 @@ onDeactivated(() => {})
   margin-bottom: 10px;
 }
 </style>
+~/models/w-table

@@ -370,9 +370,8 @@
 import { ref, reactive } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
 import { User } from "../models/user";
-import { loginFun, getAuthCodeFunc } from "../api/loginService";
+import { loginFun, getAuthCodeFunc } from "~/service/loginService";
 
 export default {
   setup() {

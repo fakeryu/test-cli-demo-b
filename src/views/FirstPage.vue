@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2022-07-06 09:14:19
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-14 15:51:06
+ * @LastEditTime: 2023-08-29 17:44:43
  * @Description: 请填写简介
 -->
 <template>
@@ -284,7 +284,6 @@ onUnmounted(() => {
     }
     .first__charts {
       height: calc(100% - 300px);
-      background: khaki;
       display: flex;
       justify-content: space-around;
       align-items: center;

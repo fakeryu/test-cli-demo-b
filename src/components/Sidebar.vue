@@ -1,54 +1,44 @@
 <template>
   <div class="sidebar">
-    <el-menu
-      class="sidebar-el-menu"
-      :default-active="onRoutes"
-      :collapse="collapse"
-      background-color="#1f2e54"
-      text-color="#FFFFFF"
-      active-text-color="#FFFFFF"
-      unique-opened
-      router
-    >
+    <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#1f2e54"
+      text-color="#FFFFFF" active-text-color="#FFFFFF" unique-opened router>
       <template v-for="item in menus">
         <template v-if="item.subs && item.subs.length">
-          <el-submenu :index="item.index" :key="item.index">
+          <el-sub-menu :index="item.index" :key="item.index">
             <template #title>
-              <i :class="item.icon"></i>
+              <el-icon>
+                <component :is="item.icon"></component>
+              </el-icon>
               <span>{{ item.title }}</span>
             </template>
             <template v-for="subItem in item.subs">
-              <el-submenu
-                v-if="subItem.subs && subItem.subs.length"
-                :index="subItem.index"
-                :key="subItem.index"
-              >
+              <el-sub-menu v-if="subItem.subs && subItem.subs.length" :index="subItem.index" :key="subItem.index">
                 <template #title>{{ subItem.title }}</template>
-                <el-menu-item
-                  v-for="(threeItem, i) in subItem.subs"
-                  :key="i"
-                  :index="threeItem.index"
-                >
-                  {{ threeItem.title }}</el-menu-item
-                >
-              </el-submenu>
-              <el-menu-item v-else :index="subItem.index" :key="subItem.index"
-                >{{ subItem.title }}
+                <el-menu-item v-for="(threeItem, i) in subItem.subs" :key="i" :index="threeItem.index">
+                  {{ threeItem.title }}</el-menu-item>
+              </el-sub-menu>
+              <el-menu-item v-else :index="subItem.index" :key="subItem['index']">{{ subItem.title }}
               </el-menu-item>
             </template>
-          </el-submenu>
+          </el-sub-menu>
         </template>
         <template v-else>
           <el-menu-item :index="item.index" :key="item.index">
-            <i :class="item.icon"></i>
+            <el-icon>
+              <component :is="item.icon"></component>
+            </el-icon>
             <template #title>{{ item.title }}</template>
           </el-menu-item>
         </template>
       </template>
       <!-- 折叠按钮 -->
       <div class="collapse-btn" @click="collapseChage">
-        <i v-if="!collapse" class="el-icon-s-fold" style="font-size: 16px"></i>
-        <i v-else class="el-icon-s-unfold" style="font-size: 16px"></i>
+        <el-icon v-if="!collapse" style="font-size: 16px">
+          <Fold />
+        </el-icon>
+        <el-icon v-else style="font-size: 16px">
+          <Expand />
+        </el-icon>
       </div>
     </el-menu>
   </div>
@@ -62,7 +52,7 @@ import { generateMenus } from "../utils/forTree";
 import { menuConfig } from "../router/menu";
 
 export default {
-  setup() {
+  setup () {
     const menus = menuConfig;
     // const menus = generateMenus();
     // console.log(menus);
@@ -106,17 +96,22 @@ export default {
   bottom: 0;
   overflow-y: scroll;
 }
+
 .sidebar::-webkit-scrollbar {
   width: 0;
 }
+
 .sidebar-el-menu:not(.el-menu--collapse) {
   width: 208px;
 }
-.sidebar > ul {
+
+.sidebar>ul {
   height: 100%;
 }
+
 .sidebar-el-menu {
   position: relative;
+
   .collapse-btn {
     position: absolute;
     bottom: 0;
@@ -127,7 +122,7 @@ export default {
     color: white;
   }
 }
+
 .el-menu-item.is-active {
   background: #0581f5 !important;
-}
-</style>
+}</style>

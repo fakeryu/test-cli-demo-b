@@ -2,7 +2,7 @@
     <div class="">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-copy"></i> tab选项卡</el-breadcrumb-item>
+                <el-breadcrumb-item><el-icon><CopyDocument /></el-icon>tab选项卡</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -17,7 +17,7 @@
                         <el-table-column prop="date" width="180"></el-table-column>
                         <el-table-column width="120">
                             <template #default="scope">
-                                <el-button size="small" @click="handleRead(scope.$index)">标为已读</el-button>
+                                <el-button  @click="handleRead(scope.$index)">标为已读</el-button>
                             </template>
                         </el-table-column>
                     </el-table>

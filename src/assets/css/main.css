@@ -214,3 +214,8 @@ input::-webkit-inner-spin-button {
 .el-button--primary {
   background: #0581f5 !important;
 }
+
+.dialog-footer {
+  text-align: center;
+  margin: 0 auto;
+}

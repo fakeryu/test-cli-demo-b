@@ -2,31 +2,27 @@
  * @Author: berg yu
  * @Date: 2022-04-15 18:53:56
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-15 13:18:53
+ * @LastEditTime: 2023-08-21 11:24:39
  * @Description: 请填写简介
 -->
 <template>
   <div class="about">
     <v-header />
     <v-sidebar />
-    <div
-      class="content-box"
-      :class="{ 'content-collapse': collapse }"
-    >
+    <div class="content-box" :class="{ 'content-collapse': collapse }">
       <v-tags />
       <div class="content">
         <router-view v-slot="{ Component }">
-          <transition
-            name="move"
-            mode="out-in"
-          >
-            <keep-alive :include="tagsList">
-              <component
-                :is="Component"
-                v-if="route.meta.keepAlive"
-                :key="route.name"
-              />
-            </keep-alive>
+          <transition name="move" mode="out-in">
+            <div>
+              <keep-alive :include="tagsList">
+                <component
+                  :is="Component"
+                  v-if="route.meta.keepAlive"
+                  :key="route.name"
+                />
+              </keep-alive>
+            </div>
           </transition>
           <component
             :is="Component"

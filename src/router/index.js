@@ -30,6 +30,7 @@ const routes = [
         name: "404",
         meta: {
           title: "找不到页面",
+          keepAlive: false,
         },
         component: () => import("../views/404.vue"),
       },
@@ -38,6 +39,7 @@ const routes = [
         name: "403",
         meta: {
           title: "没有权限",
+          keepAlive: false,
         },
         component: () => import("../views/403.vue"),
       },
@@ -69,6 +71,15 @@ const routes = [
         component: () => import("../views/robot/RobotTask.vue"),
       },
       {
+        path: "/robot/task-statistics",
+        name: "RobotTaskStatistics",
+        meta: {
+          title: "机器人任务统计",
+          keepAlive: true,
+        },
+        component: () => import("../views/robot/RobotTaskStatistics.vue"),
+      },
+      {
         path: "/basic/org-manage",
         name: "OrgManage",
         meta: {
@@ -88,18 +99,17 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/login",
-    name: "Login",
-    meta: {
-      title: "登录",
-    },
-    component: () => import("../views/Login.vue"),
-  },
-  ,
+  // {
+  //   path: "/login",
+  //   name: "Login",
+  //   meta: {
+  //     title: "登录",
+  //   },
+  //   component: () => import("../views/Login.vue"),
+  // },
   {
     path: "/:catchAll(.*)", // 不识别的path自动匹配home
-    redirect: "/home",
+    redirect: "/404",
   },
 ];
 

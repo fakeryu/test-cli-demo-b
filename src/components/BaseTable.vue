@@ -8,59 +8,13 @@
       </el-breadcrumb>
     </div> -->
     <div class="container">
-      <el-table
-        :data="tableParams['value']"
-        border
-        height="500"
-        class="table"
-        ref="multipleTable"
-        header-cell-class-name="table-header"
-        empty-text="暂无数据"
-        @selection-change="handleSelectionChange"
-      >
-        <template v-for="item of tableParams['cols']" :key="item.prop">
-          <el-table-column
-            v-if="item.prop == 'selection'"
-            type="selection"
-            align="center"
-            width="55"
-          />
-          <el-table-column
-            v-else-if="
-              item.prop !== 'selection' &&
-              item.prop !== 'status' &&
-              item.prop !== 'operator'
-            "
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width || null"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            v-else-if="item.prop == 'status'"
-            :prop="item.prop"
-            label="状态"
-            width="180"
-            align="center"
-          >
-            <template #default="scope">
-              <el-switch
-                v-model="scope.row.status"
-                @change="switchStatus(scope.row)"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column
-            v-else-if="item.prop == 'operator'"
-            :prop="item.prop"
-            label="操作"
-            width="180"
-            align="center"
-          >
-            <template #default="scope">
-              <slot name="operator" :scope="scope"></slot>
-            </template>
-          </el-table-column>
+      <el-table :data="tableParams['value']" border height="500" class="table" ref="multipleTable"
+        header-cell-class-name="table-header" empty-text="暂无数据" @selection-change="handleSelectionChange">
+        <template v-for="item of  tableParams['cols'] " :key="item.prop">
+          <el-table-column v-if="item.prop == 'selection'" type="selection" align="center" width="55" />
+          <template v-else>
+            <slot name="custome" :item="item"></slot>
+          </template>
         </template>
       </el-table>
       <div class="pagination" v-if="!!pageParam">
@@ -69,16 +23,10 @@
           {{ pageParam.pages }} 页
         </div>
         <!-- v-model:page-size="pageParam.size" -->
-        <el-pagination
-          v-model:current-page="tableParams['pm']['current']"
-          :page-sizes="tableParams['pm']['sizes'] || [10, 20, 30, 40]"
-          :disabled="false"
-          background
-          layout="prev, pager, next, sizes, slot"
-          :total="tableParams['pm']['total']"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        >
+        <el-pagination v-model:current-page="tableParams['pm']['current']"
+          :page-sizes="tableParams['pm']['sizes'] || [10, 20, 30, 40]" :disabled="false" background
+          layout="prev, pager, next, sizes, slot" :total="tableParams['pm']['total']" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange">
           <!-- <template #default>
             <div key="1">跳转 <el-input style="width: 100px" /></div>
           </template> -->
@@ -107,11 +55,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, defineProps, defineEmit } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import service from '../utils/request'
+import { ref, reactive } from 'vue'
 import type { Page } from '~/models/page'
-import { WNewTable } from '~/service/w-table'
+
+defineProps<{
+  columns: Coloumn[]
+  pageParam?: Page
+  tableData: Object[]
+  tableParams: Object
+}>()
+
+const emits = defineEmits([
+  'selectionChange',
+  'statusChange',
+  'currentChange',
+  'sizeChange'
+])
+
 
 const currentPage1 = ref(1)
 const pageSize2 = ref(100)
@@ -122,19 +82,6 @@ interface Coloumn {
   type?: string
   width?: string | number
 }
-
-defineProps<{
-  columns: Coloumn[]
-  pageParam?: Page
-  tableData: Object[]
-  tableParams: Object
-}>()
-const emits = defineEmit([
-  'selectionChange',
-  'statusChange',
-  'currentChange',
-  'sizeChange'
-])
 
 // 表格编辑时弹窗和保存
 const editVisible = ref(false)
@@ -188,22 +135,27 @@ const switchStatus = (row) => {
   width: 300px;
   display: inline-block;
 }
+
 .table {
   width: 100%;
   font-size: 14px;
 }
+
 .red {
   color: #ff0000;
 }
+
 .mr10 {
   margin-right: 10px;
 }
+
 .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
 }
+
 .table-td-thumb {
   display: block;
   margin: auto;
@@ -211,3 +163,4 @@ const switchStatus = (row) => {
   height: 40px;
 }
 </style>
+~/models/w-table

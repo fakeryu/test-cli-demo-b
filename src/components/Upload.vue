@@ -3,7 +3,9 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-calendar"></i> 表单
+                    <el-icon>
+                        <Calendar />
+                    </el-icon> 表单
                 </el-breadcrumb-item>
                 <el-breadcrumb-item>图片上传</el-breadcrumb-item>
             </el-breadcrumb>
@@ -16,7 +18,9 @@
                 <a href="http://element.eleme.io/#/zh-CN/component/upload" target="_blank">Element UI Upload</a>
             </div>
             <el-upload class="upload-demo" drag action="http://jsonplaceholder.typicode.com/api/posts/" multiple>
-                <i class="el-icon-upload"></i>
+                <el-icon>
+                    <Upload />
+                </el-icon>
                 <div class="el-upload__text">
                     将文件拖到此处，或
                     <em>点击上传</em>
@@ -46,7 +50,7 @@ export default {
     components: {
         VueCropper,
     },
-    setup() {
+    setup () {
         const imgSrc = ref("");
         const cropImg = ref(defaultSrc);
         const dialogVisible = ref(false);
@@ -104,10 +108,12 @@ export default {
     border: 1px solid #eee;
     border-radius: 5px;
 }
+
 .crop-demo {
     display: flex;
     align-items: flex-end;
 }
+
 .crop-demo-btn {
     position: relative;
     width: 100px;
@@ -121,6 +127,7 @@ export default {
     border-radius: 4px;
     box-sizing: border-box;
 }
+
 .crop-input {
     position: absolute;
     width: 100px;
@@ -129,5 +136,4 @@ export default {
     top: 0;
     opacity: 0;
     cursor: pointer;
-}
-</style>
+}</style>

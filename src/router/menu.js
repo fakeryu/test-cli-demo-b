@@ -2,18 +2,18 @@
  * @Author: berg yu
  * @Date: 2023-08-08 15:03:39
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-10 09:57:25
+ * @LastEditTime: 2023-08-29 17:28:45
  * @Description: 菜单
  */
 
 export const menuConfig = [
   {
-    icon: "el-icon-house",
+    icon: "House",
     index: "/home",
     title: "首页",
   },
   {
-    icon: "el-icon-box",
+    icon: "Box",
     index: "/robot",
     title: "机器人管理",
     subs: [
@@ -29,10 +29,14 @@ export const menuConfig = [
         index: "/robot/task",
         title: "机器人任务",
       },
+      {
+        index: "/robot/task-statistics",
+        title: "机器人任务统计",
+      },
     ],
   },
   {
-    icon: "el-icon-document",
+    icon: "Document",
     index: "/basic",
     title: "基础管理",
     subs: [

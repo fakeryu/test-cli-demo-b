@@ -2,7 +2,7 @@
  * @Author: berg yu
  * @Date: 2023-08-15 11:26:42
  * @LastEditors: berg yu
- * @LastEditTime: 2023-08-15 14:10:37
+ * @LastEditTime: 2023-08-29 14:54:22
  * @Description: 请填写简介
  */
 module.exports = {
@@ -20,9 +20,10 @@ module.exports = {
     'plugin:prettier/recommended'
   ],
   env: {
-    browser: true,
-    node: true,
-    es6: true
+    // browser: true,
+    // node: true,
+    // es6: true,
+    'vue/setup-compiler-macros': true
   },
   rules: {
     'no-console': 'off',
@@ -30,5 +31,10 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    "no-undef": 'off',
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": [
+      "off"
+    ]
   }
 }
